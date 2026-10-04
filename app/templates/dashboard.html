@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>QA Activity Auditor</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="app-shell">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="page-header">
+
+        <div>
+            <div class="brand-row">
+                <div class="brand-icon">QA</div>
+
+                <div>
+                    <h1>QA Activity Auditor</h1>
+                    <p>AI Assisted QA Validation</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                type="button"
+                id="refreshButton"
+                class="btn btn-secondary"
+            >
+                Refresh
+            </button>
+
+            <button
+                type="button"
+                id="swaggerButton"
+                class="btn btn-secondary"
+            >
+                Swagger API
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         SUMMARY
+    ====================================================== -->
+
+    <section class="summary-grid">
+
+        <button
+            type="button"
+            class="summary-card summary-total"
+            id="totalCard"
+        >
+            <span class="summary-label">Total Tasks</span>
+            <strong id="totalTasks">0</strong>
+            <span class="summary-hint">View all tasks</span>
+        </button>
+
+
+        <button
+            type="button"
+            class="summary-card summary-passed"
+            id="passedCard"
+        >
+            <span class="summary-label">Passed</span>
+            <strong id="passedTasks">0</strong>
+            <span class="summary-hint">Show passed tasks</span>
+        </button>
+
+
+        <button
+            type="button"
+            class="summary-card summary-failed"
+            id="failedCard"
+        >
+            <span class="summary-label">Failed</span>
+            <strong id="failedTasks">0</strong>
+            <span class="summary-hint">Show failed tasks</span>
+        </button>
+
+    </section>
+
+
+    <!-- =====================================================
+         AUDIT CONTROLS
+    ====================================================== -->
+
+    <section class="audit-controls">
+
+        <div class="date-run-row">
+
+            <div class="date-field">
+
+                <label for="extractionDate">
+                    Extraction Date
+                </label>
+
+                <input
+                    type="date"
+                    id="extractionDate"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                id="runAuditButton"
+                class="btn btn-primary run-audit-btn"
+            >
+                <span class="run-button-text">Run Audit</span>
+                <span class="button-spinner" aria-hidden="true"></span>
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FILTERS
+    ====================================================== -->
+
+    <section class="filter-card">
+
+        <div class="filter-header">
+
+            <div>
+                <h2>Filters</h2>
+                <p>Refine the audit results</p>
+            </div>
+
+            <button
+                type="button"
+                id="clearFilters"
+                class="clear-filter-btn"
+            >
+                Clear filters
+            </button>
+
+        </div>
+
+
+        <div class="filter-grid">
+
+            <div class="filter-field filter-search">
+
+                <label for="search">
+                    Search
+                </label>
+
+                <div class="search-wrapper">
+
+                    <span class="search-icon">⌕</span>
+
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Search by task title..."
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="sectionFilter">
+                    Section
+                </label>
+
+                <select id="sectionFilter">
+                    <option value="">All Sections</option>
+                </select>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="activityFilter">
+                    Activity
+                </label>
+
+                <select id="activityFilter">
+                    <option value="">All Activities</option>
+                </select>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="statusFilter">
+                    Status
+                </label>
+
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="PASS">Passed</option>
+                    <option value="FAIL">Failed</option>
+                </select>
+
+            </div>
+
+
+            <div class="filter-field">
+
+                <label for="ongoingFilter">
+                    Task Type
+                </label>
+
+                <select id="ongoingFilter">
+                    <option value="">All</option>
+                    <option value="true">Ongoing Tasks</option>
+                    <option value="false">Regular Tasks</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         SECTION RESULTS
+    ====================================================== -->
+
+    <main id="sectionsContainer" class="sections-container">
+
+        <!-- Sections are generated by dashboard.js -->
+
+    </main>
+
+
+    <!-- =====================================================
+         AUDIT DETAILS
+    ====================================================== -->
+
+    <section
+        id="detailsPanel"
+        class="details-card"
+    >
+
+        <div class="details-empty">
+
+            <div class="details-empty-icon">✓</div>
+
+            <h2>Audit Details</h2>
+
+            <p>
+                Select a task to view validation details.
+            </p>
+
+        </div>
+
+        <div id="detailsContent"></div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     LOADING OVERLAY
+========================================================= -->
+
+<div
+    id="loadingOverlay"
+    class="loading-overlay hidden"
+    aria-live="polite"
+    aria-busy="true"
+>
+
+    <div class="loader-card">
+
+        <div class="loader-spinner"></div>
+
+        <h3>Running QA Audit</h3>
+
+        <p>
+            Fetching Azure DevOps tasks and validating data.
+        </p>
+
+        <div class="loader-progress">
+            <span></span>
+        </div>
+
+        <small>
+            Please wait...
+        </small>
+
+    </div>
+
+</div>
+
+
+<script src="/static/dashboard.js"></script>
+
+</body>
+</html>
