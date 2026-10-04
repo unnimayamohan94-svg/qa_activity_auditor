@@ -4,10 +4,10 @@ app = FastAPI()
 
 
 @app.get("/")
-async def root():
+def root():
     return {"status": "Vercel FastAPI is working"}
 
 
 @app.get("/health")
-async def health():
+def health():
     return {"status": "ok"}
