@@ -1401,8 +1401,87 @@ function showDetails(workItemId) {
     }
 
 
+    /* =====================================================
+       DEVOPS UPDATE DRAFT
+       PAT/write-back is intentionally not connected yet.
+    ====================================================== */
+
+    html += `
+
+        <div class="devops-update-card">
+
+            <div class="devops-update-header">
+                <div>
+                    <span class="details-eyebrow">Azure DevOps</span>
+                    <h3>Update Work Item</h3>
+                    <p>Prepare a field update. Nothing is written to DevOps yet.</p>
+                </div>
+                <span class="devops-status-badge">Write-back not connected</span>
+            </div>
+
+            <div class="devops-update-grid">
+
+                <div class="devops-field">
+                    <label for="devopsWorkItem">Work Item</label>
+                    <select id="devopsWorkItem">
+                        <option value="${escapeHtml(String(audit.work_item_id ?? ""))}">
+                            ${escapeHtml(String(audit.work_item_id ?? "-"))} – ${escapeHtml(audit.title || "Untitled")}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="devops-field">
+                    <label for="devopsField">Field to Update</label>
+                    <select id="devopsField">
+                        ${getDevopsFieldOptions(audit)}
+                    </select>
+                </div>
+
+                <div class="devops-field devops-mode-field">
+                    <label for="devopsUpdateMode">Update Mode</label>
+                    <select id="devopsUpdateMode">
+                        <option value="append">Append to existing content</option>
+                        <option value="replace">Replace existing content</option>
+                    </select>
+                </div>
+
+                <div class="devops-field devops-content-field">
+                    <label for="devopsUpdateContent">Comment / Update Content</label>
+                    <textarea
+                        id="devopsUpdateContent"
+                        rows="5"
+                        placeholder="Enter the QA information you want to add or use to replace the selected field..."
+                    ></textarea>
+                </div>
+
+            </div>
+
+            <div class="devops-update-actions">
+                <button type="button" class="btn btn-secondary" id="previewDevopsUpdate">
+                    Preview Changes
+                </button>
+                <button type="button" class="btn btn-primary" id="updateDevopsButton" disabled title="PAT/write-back integration will be enabled later">
+                    Update DevOps
+                </button>
+            </div>
+
+            <div id="devopsPreview" class="devops-preview hidden"></div>
+
+        </div>
+
+    `;
+
+
     container.innerHTML =
         html;
+
+
+    const previewButton =
+        document.getElementById("previewDevopsUpdate");
+
+    if (previewButton) {
+        previewButton.addEventListener("click", previewDevopsUpdate);
+    }
 
 
     document
@@ -1413,6 +1492,134 @@ function showDetails(workItemId) {
             behavior: "smooth",
             block: "start"
         });
+
+}
+
+
+/* =========================================================
+   DEVOPS UPDATE FIELDS
+
+   Keep this list aligned with the fields exposed by the
+   validation results. The preferred order matches the
+   QA fields used by the auditor. Any additional field name
+   returned by validation results is added automatically.
+========================================================= */
+
+function getDevopsFieldOptions(audit) {
+
+    const preferredFields = [
+        "Channel Name",
+        "State",
+        "Target Start Date",
+        "Target End Date",
+        "Actual Start Date",
+        "Actual End Date",
+        "Detailed Description",
+        "Completion Percentage",
+        "UAT Start Date",
+        "UAT End Date",
+        "UAT Completion Percentage",
+        "Overall UAT Bugs",
+        "Tags"
+    ];
+
+
+    const validatedFields = (audit?.results || [])
+        .map(result => result?.field_name)
+        .filter(Boolean);
+
+
+    const fields = [];
+
+
+    [...preferredFields, ...validatedFields].forEach(field => {
+
+        if (!fields.includes(field)) {
+            fields.push(field);
+        }
+
+    });
+
+
+    return fields.map(field => `
+        <option value="${escapeHtml(field)}">
+            ${escapeHtml(field)}
+        </option>
+    `).join("");
+
+}
+
+
+/* =========================================================
+   DEVOPS UPDATE PREVIEW
+========================================================= */
+
+function previewDevopsUpdate() {
+
+    const workItem =
+        document.getElementById("devopsWorkItem");
+
+    const field =
+        document.getElementById("devopsField");
+
+    const mode =
+        document.getElementById("devopsUpdateMode");
+
+    const content =
+        document.getElementById("devopsUpdateContent");
+
+    const preview =
+        document.getElementById("devopsPreview");
+
+
+    if (!workItem || !field || !mode || !content || !preview) {
+        return;
+    }
+
+
+    const value = content.value.trim();
+
+    if (!value) {
+        preview.classList.remove("hidden");
+        preview.innerHTML = `
+            <div class="devops-preview-error">
+                Please enter content before previewing the update.
+            </div>
+        `;
+        return;
+    }
+
+
+    const fieldName =
+        field.options[field.selectedIndex]?.text || field.value;
+
+    const modeName =
+        mode.value === "append"
+            ? "Append to existing content"
+            : "Replace existing content";
+
+
+    preview.classList.remove("hidden");
+
+    preview.innerHTML = `
+        <div class="devops-preview-header">
+            <strong>Proposed Update</strong>
+            <span>${escapeHtml(modeName)}</span>
+        </div>
+
+        <div class="devops-preview-meta">
+            <div><span>Work Item</span><strong>${escapeHtml(workItem.value)}</strong></div>
+            <div><span>Field</span><strong>${escapeHtml(fieldName)}</strong></div>
+        </div>
+
+        <div class="devops-preview-content">
+            ${escapeHtml(value).replaceAll("\n", "<br>")}
+        </div>
+
+        <div class="devops-preview-note">
+            Preview only. No Azure DevOps Work Item has been changed.
+        </div>
+    `;
 
 }
 

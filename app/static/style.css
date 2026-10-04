@@ -1666,6 +1666,202 @@ button {
    RESPONSIVE
 ========================================================= */
 
+
+
+/* =========================================================
+   DEVOPS UPDATE DRAFT
+========================================================= */
+
+.devops-update-card {
+    margin-top: 24px;
+    padding: 18px;
+    border: 1px solid #dbe5f0;
+    border-radius: 10px;
+    background: #fbfdff;
+}
+
+.devops-update-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.devops-update-header h3 {
+    margin: 0;
+    color: #203a59;
+    font-size: 15px;
+}
+
+.devops-update-header p {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.devops-status-badge {
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.devops-update-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.devops-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.devops-field label {
+    color: #60728a;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.devops-field select,
+.devops-field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #d7e1ec;
+    border-radius: 7px;
+    background: white;
+    color: #294564;
+    font: inherit;
+    font-size: 11px;
+    padding: 9px 10px;
+    outline: none;
+}
+
+.devops-field select:focus,
+.devops-field textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, .08);
+}
+
+.devops-content-field {
+    grid-column: 1 / -1;
+}
+
+.devops-field textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.5;
+}
+
+.devops-update-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 9px;
+    margin-top: 13px;
+}
+
+.devops-update-actions .btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.devops-preview {
+    margin-top: 15px;
+    padding: 14px;
+    border: 1px solid #dbe5f0;
+    border-radius: 8px;
+    background: white;
+}
+
+.devops-preview.hidden {
+    display: none;
+}
+
+.devops-preview-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 11px;
+    color: #203a59;
+    font-size: 11px;
+}
+
+.devops-preview-header span {
+    color: #64748b;
+    font-size: 10px;
+}
+
+.devops-preview-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 11px;
+}
+
+.devops-preview-meta > div {
+    padding: 8px;
+    background: #f8fafc;
+    border-radius: 6px;
+}
+
+.devops-preview-meta span {
+    display: block;
+    color: #7a8da5;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.devops-preview-meta strong {
+    color: #294564;
+    font-size: 10px;
+}
+
+.devops-preview-content {
+    padding: 11px;
+    border-left: 3px solid var(--primary);
+    background: #f8fafc;
+    color: #304b68;
+    font-size: 11px;
+    line-height: 1.55;
+    word-break: break-word;
+}
+
+.devops-preview-note {
+    margin-top: 9px;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.devops-preview-error {
+    color: #b91c1c;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+@media (max-width: 760px) {
+    .devops-update-grid,
+    .devops-preview-meta {
+        grid-template-columns: 1fr;
+    }
+
+    .devops-content-field {
+        grid-column: auto;
+    }
+
+    .devops-update-header {
+        flex-direction: column;
+    }
+}
+
 @media (max-width: 1050px) {
 
     .filter-grid {
