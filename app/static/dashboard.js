@@ -882,7 +882,8 @@ function createSectionCard(
 
     body.innerHTML =
         createSectionTable(
-            audits
+            audits,
+            sectionName
         );
 
 
@@ -962,7 +963,8 @@ function createSectionCard(
 ========================================================= */
 
 function createSectionTable(
-    audits
+    audits,
+    sectionName
 ) {
 
     if (!audits.length) {
@@ -1093,8 +1095,9 @@ function createSectionTable(
                         type="button"
                         class="view-button"
                         data-work-item-id="${
-                            audit.work_item_id
+                            escapeHtml(String(audit.work_item_id ?? ""))
                         }"
+                        data-section="${escapeHtml(sectionName || "")}" 
                     >
                         View
                     </button>
@@ -1150,15 +1153,17 @@ function createSectionTable(
    SHOW DETAILS
 ========================================================= */
 
-function showDetails(workItemId) {
+function showDetails(workItemId, sectionName) {
 
+    // Work items can appear in more than one saved-query section.
+    // Match both ID and section so details always correspond to the clicked row.
     const audit =
         auditData.find(
             item =>
-                String(
-                    item.work_item_id
-                ) ===
-                String(workItemId)
+                String(item.work_item_id) === String(workItemId) &&
+                (!sectionName || item.section === sectionName)
+        ) || auditData.find(
+            item => String(item.work_item_id) === String(workItemId)
         );
 
 
@@ -2005,7 +2010,8 @@ function setupEventHandlers() {
 
 
                 showDetails(
-                    button.dataset.workItemId
+                    button.dataset.workItemId,
+                    button.dataset.section
                 );
 
             }
